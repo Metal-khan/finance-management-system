@@ -3,12 +3,16 @@ define('APP_STARTED', true);
 require_once '../includes/db.php';
 require_once '../includes/core.php';
 
-// Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $father_name = $_POST['father_name'];
     $cnic_number = $_POST['cnic_number'];
     $mobile_number = $_POST['mobile_number'];
+    $mobile_number_2 = $_POST['mobile_number_2'];
+    $account_number = $_POST['account_number'];
+    $occupation = $_POST['occupation'];
+    $previous_account_number = $_POST['previous_account_number'];
+    $reference = $_POST['reference'];
 
     $guarantors = [];
 
@@ -16,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $guarantors[$i]['name'] = $_POST["guarantor{$i}_name"];
         $guarantors[$i]['cnic'] = $_POST["guarantor{$i}_cnic"];
 
-        // Handle image upload
         $picPath = '';
         if (isset($_FILES["guarantor{$i}_picture"]) && $_FILES["guarantor{$i}_picture"]['error'] === UPLOAD_ERR_OK) {
             $targetDir = "../uploads/";
@@ -33,22 +36,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $guarantors[$i]['picture'] = $picPath;
     }
 
-    // Insert into database
     $stmt = $conn->prepare("INSERT INTO user_profiles 
-        (name, father_name, cnic_number, mobile_number,
+        (name, father_name, cnic_number, mobile_number, mobile_number_2, account_number, occupation, previous_account_number, reference,
         guarantor1_name, guarantor1_cnic, guarantor1_picture,
         guarantor2_name, guarantor2_cnic, guarantor2_picture,
         guarantor3_name, guarantor3_cnic, guarantor3_picture,
         guarantor4_name, guarantor4_cnic, guarantor4_picture)
-        VALUES (?, ?, ?, ?,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?,
                 ?, ?, ?,
                 ?, ?, ?,
                 ?, ?, ?)");
-    
+
     $stmt->bind_param(
-        "ssssssssssssssss",
-        $name, $father_name, $cnic_number, $mobile_number,
+        "sssssssss" . str_repeat("sss", 4),
+        $name, $father_name, $cnic_number, $mobile_number, $mobile_number_2, $account_number, $occupation, $previous_account_number, $reference,
         $guarantors[1]['name'], $guarantors[1]['cnic'], $guarantors[1]['picture'],
         $guarantors[2]['name'], $guarantors[2]['cnic'], $guarantors[2]['picture'],
         $guarantors[3]['name'], $guarantors[3]['cnic'], $guarantors[3]['picture'],
@@ -68,7 +70,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label>Name: <input type="text" name="name" required></label><br>
     <label>Father Name: <input type="text" name="father_name" required></label><br>
     <label>CNIC Number: <input type="text" name="cnic_number" required></label><br>
-    <label>Mobile Number: <input type="text" name="mobile_number" required></label><br><br>
+    <label>Mobile Number: <input type="text" name="mobile_number" required></label><br>
+    <label>Additional Mobile Number: <input type="text" name="mobile_number_2"></label><br>
+    <label>Account Number: <input type="text" name="account_number"></label><br>
+    <label>Occupation: <input type="text" name="occupation"></label><br>
+    <label>Previous Account Number: <input type="text" name="previous_account_number"></label><br>
+    <label>Reference: <input type="text" name="reference"></label><br><br>
 
     <h3>Guarantors:</h3>
     <?php for ($i = 1; $i <= 4; $i++): ?>
@@ -96,6 +103,11 @@ while ($row = $result->fetch_assoc()):
         <strong>Father:</strong> <?= htmlspecialchars($row['father_name']) ?><br>
         <strong>CNIC:</strong> <?= htmlspecialchars($row['cnic_number']) ?><br>
         <strong>Mobile:</strong> <?= htmlspecialchars($row['mobile_number']) ?><br>
+        <strong>Additional Mobile:</strong> <?= htmlspecialchars($row['mobile_number_2']) ?><br>
+        <strong>Account #:</strong> <?= htmlspecialchars($row['account_number']) ?><br>
+        <strong>Occupation:</strong> <?= htmlspecialchars($row['occupation']) ?><br>
+        <strong>Previous Account #:</strong> <?= htmlspecialchars($row['previous_account_number']) ?><br>
+        <strong>Reference:</strong> <?= htmlspecialchars($row['reference']) ?><br>
 
         <div style="margin-top:10px;">
             <strong>Guarantors:</strong><br>

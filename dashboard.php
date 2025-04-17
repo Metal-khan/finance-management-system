@@ -11,7 +11,7 @@ require_once __DIR__ . '/includes/core.php';
 <h2>Finance Management Dashboard</h2>
 <ul>
   <li><a href="sections/user-profile.php">User Profile</a></li>
-  <li><a href="sections/section-2.php">Section 2</a></li>
+  <li><a href="sections/loan.php">Loan</a></li>
   <li><a href="sections/section-3.php">Section 3</a></li>
   <li><a href="sections/section-4.php">Section 4</a></li>
 </ul>
